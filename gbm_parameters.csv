@@ -1,0 +1,6 @@
+type,parameter,value
+Stock,initial_value,17.65999984741211
+Stock,drift,0.00030498044576611103
+Stock,volatility,0.011954435185984403
+Stock,time_horizon,2.0
+Stock,steps,252.0

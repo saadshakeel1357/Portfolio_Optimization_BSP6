@@ -37,12 +37,12 @@ def analyze_indices_returns():
     saves the returns into CSV files, and computes the average daily return and volatility (standard deviation)
     for each index.
     
-    Changes in this version to fix warnings:
-      - Added the parameter auto_adjust=False to yf.download() to explicitly set the adjustment behavior.
-      - Used the .item() method to extract a scalar value from the Series returned by .mean() and .std(),
-        which prevents the FutureWarning when using float() directly.
+    Returns:
+        dict: A dictionary where each key is a ticker and the value is another dictionary with:
+              'initial_value', 'drift', and 'volatility'
     """
     indices = ["^GSPC", "LQD", "IEF"]
+    results = {}
     print("Downloading data for indices and computing returns, average returns, and volatility...")
     
     for ticker in indices:
@@ -60,27 +60,86 @@ def analyze_indices_returns():
         returns.to_csv(f"{safe_ticker}_returns.csv", sep='\t', header=True)
         
         # Compute average (mean) return and volatility (standard deviation).
-        avg_return = returns.mean()
-        volatility = returns.std()
+        avg_return = returns.mean().item()   # Convert to a scalar
+        volatility = returns.std().item()      # Convert to a scalar
         
-        # Convert the one-element Series to a scalar using .item() to avoid a FutureWarning.
-        avg_return_float = avg_return.item()
-        volatility_float = volatility.item()
+        # Extract initial value from the price data and convert it to a float.
+        initial_value = float(data['close'].iloc[0])
+        
+        # Store the extracted values in our results dictionary.
+        results[ticker] = {
+            "initial_value": initial_value,
+            "drift": avg_return,
+            "volatility": volatility
+        }
         
         # Print the computed statistics for the current index.
         print(f"\n--- Statistics for {ticker} ---")
-        print(f"Average Daily Return: {avg_return_float:.6f}")
-        print(f"Volatility (Standard Deviation): {volatility_float:.6f}")
+        print(f"Initial Value: {initial_value}")
+        print(f"Average Daily Return (Drift): {avg_return:.6f}")
+        print(f"Volatility (Standard Deviation): {volatility:.6f}")
+    
+    return results
+
+def create_gbm_parameter_csv(index_ticker, initial_value, drift, volatility, 
+                               time_horizon=1, steps=252, output_file="gbm_parameters.csv"):
+    """
+    Creates a CSV file containing parameters suitable for the GBM model input.
+    
+    The CSV file has three columns: 'type', 'parameter', and 'value'. For this example,
+    the 'type' field is fixed as 'Stock'.
+    
+    Parameters:
+        index_ticker (str): The ticker used (for clarity, though not stored in CSV).
+        initial_value (float): The starting price for the GBM simulation.
+        drift (float): The average daily return to be used as the drift.
+        volatility (float): The standard deviation of returns.
+        time_horizon (float): The simulation time horizon in years (default is 1).
+        steps (int): The number of simulation steps (default is 252).
+        output_file (str): The name of the output CSV file.
+    """
+    df = pd.DataFrame({
+        "type": ["Stock"] * 5,
+        "parameter": ["initial_value", "drift", "volatility", "time_horizon", "steps"],
+        "value": [initial_value, drift, volatility, time_horizon, steps]
+    })
+    df.to_csv(output_file, index=False)
+    print(f"GBM parameter CSV saved to {output_file}.")
 
 def main():
     """
-    Main function to trigger the analysis of indices returns.
+    Main function to trigger the indices returns analysis and then convert the results
+    into a GBM parameter CSV file.
     
-    This function downloads the data for each specified index, computes daily returns,
-    saves the returns into CSV files, and prints the average daily return and volatility.
+    Workflow:
+      1. Analyze indices returns for ^GSPC, LQD, and IEF.
+      2. Ask the user if they wish to generate a GBM parameters CSV from one of these indices.
+      3. If yes, prompt for the index ticker (one of the available indices), and optionally
+         for time horizon and steps.
+      4. Generate the GBM parameters CSV file.
     """
     print("Analyzing the returns of the indices: ^GSPC, LQD, IEF")
-    analyze_indices_returns()
+    results = analyze_indices_returns()  # returns a dictionary with computed parameters for each index.
+    
+    # Ask the user if they want to generate a GBM parameters CSV.
+    user_response = input("\nWould you like to generate a GBM parameters CSV from one of these indices? (yes/no): ").strip().lower()
+    if user_response in ['yes', 'y']:
+        print("Please enter the index ticker to use (e.g., ^GSPC, LQD, IEF):")
+        chosen_ticker = input().strip()
+        if chosen_ticker in results:
+            params = results[chosen_ticker]
+            # Allow user to optionally define simulation time horizon and steps.
+            time_horizon_input = input("Enter the simulation time horizon (in years, default=1): ").strip()
+            time_horizon = float(time_horizon_input) if time_horizon_input else 1
+            steps_input = input("Enter the number of simulation steps (default=252): ").strip()
+            steps = int(steps_input) if steps_input else 252
+            
+            create_gbm_parameter_csv(chosen_ticker, params["initial_value"], params["drift"], 
+                                     params["volatility"], time_horizon, steps)
+        else:
+            print(f"Ticker {chosen_ticker} was not found in the results.")
+    else:
+        print("Skipping GBM parameters CSV generation.")
 
 if __name__ == '__main__':
     main()
