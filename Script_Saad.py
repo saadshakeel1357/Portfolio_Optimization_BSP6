@@ -3,6 +3,24 @@ import numpy as np             # For numerical operations.
 import pandas as pd            # For data manipulation.
 from datetime import datetime  # For date manipulation.
 
+
+"""
+This script downloads historical data for three financial indices (^GSPC, LQD, IEF) from Yahoo Finance,
+computes their daily simple returns, saves the returns into CSV files, and computes the average daily return
+and volatility (standard deviation) for each index.
+It also allows the user to generate a CSV file with parameters suitable for a Geometric Brownian Motion (GBM) model.
+
+
+This script is not yet optimized. Ideally, I would have two separate scripts:
+1. One for downloading the data and computing returns.
+2. Another for the GBM parameters CSV generation.
+
+But for now the code works fine.
+"""
+
+
+
+
 def download_to_csv(ticker: str) -> pd.DataFrame:
     """
     Downloads the maximum available historical data for a given ticker from Yahoo Finance,

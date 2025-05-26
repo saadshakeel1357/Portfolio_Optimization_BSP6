@@ -1,5 +1,16 @@
 import pandas as pd
 
+
+"""
+This script processes returns data from a CSV file, applies weights from an Excel file,
+and computes the final portfolio values over time. It saves the final series to a CSV file.
+It assumes the returns data is in a CSV file and the weights are in an Excel file.
+The final output will be a CSV file containing the final portfolio values over time.
+"""
+
+
+
+
 def load_returns_csv(filepath):
     """Load returns (futures) data from a CSV file."""
     df_returns = pd.read_csv(filepath)
@@ -62,7 +73,7 @@ def save_series_to_csv(series, filepath):
 
 if __name__ == "__main__":
     # File paths
-    returns_file = 'combined_returns.csv'
+    returns_file = 'merged_returns.csv'
     turnover_file = 'K3turnover_adaptiveNikkeiLO.xlsx'
 
     # change output file name according to the risk function being used for easy joining later
