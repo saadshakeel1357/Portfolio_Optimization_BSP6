@@ -219,19 +219,19 @@ for s in range(intervallo):
 
     def calcola_pop_fitness(pop):
         # obiettivo=sharpe(pop)
-    ##    obiettivo=sortino_ratio(pop)
-    ##    obiettivo=[omega_ratio(pop),expected_shortfall(pop),mean_variance(pop)]
-    ##    obiettivo=[omega_ratio(pop),value_at_risk(pop),expected_shortfall(pop),mean_variance(pop),twosided(pop),risk_parity(pop)]
-    ##    obiettivo=omega_ratio(pop)
-    ##    obiettivo=risk_parity(pop)
+        # obiettivo=sortino_ratio(pop)
+        # obiettivo=[omega_ratio(pop),expected_shortfall(pop),mean_variance(pop)]   # three risk measures didnt work
+        # obiettivo=[omega_ratio(pop),value_at_risk(pop),expected_shortfall(pop),mean_variance(pop),twosided(pop),risk_parity(pop)]    # six risk measures didn't work
+        # obiettivo=omega_ratio(pop)
+        # obiettivo=risk_parity(pop)
         # obiettivo=twosided(pop)
-        obiettivo=mean_variance(pop)
-    ##    obiettivo=mean_semivariance(pop)
-    ##    obiettivo=mean_mad(pop)
-    ##    obiettivo=variance_with_skewness(pop)
-    ##    obiettivo=minimax(pop)
-    ##    obiettivo=value_at_risk(pop)
-    ##    obiettivo=expected_shortfall(pop)
+        # obiettivo=mean_variance(pop)
+        # obiettivo=mean_semivariance(pop)
+        # obiettivo=mean_mad(pop)
+        # obiettivo=variance_with_skewness(pop)   # didn't work
+        # obiettivo=minimax(pop)
+        # obiettivo=value_at_risk(pop)
+        obiettivo=expected_shortfall(pop)
         return obiettivo
 
 

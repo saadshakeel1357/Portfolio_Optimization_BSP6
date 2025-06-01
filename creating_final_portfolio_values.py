@@ -77,7 +77,7 @@ if __name__ == "__main__":
     turnover_file = 'K3turnover_adaptiveNikkeiLO.xlsx'
 
     # change output file name according to the risk function being used for easy joining later
-    output_file = 'final_portfolio_values_.csv'
+    output_file = 'final_portfolio_values_expected_shortfall.csv'
 
     # Step-by-step execution
     df = load_returns_csv(returns_file)
