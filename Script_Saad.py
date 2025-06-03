@@ -5,7 +5,7 @@ from datetime import datetime  # For date manipulation.
 
 
 """
-This script downloads historical data for three financial indices (^GSPC, LQD, IEF) from Yahoo Finance,
+This script downloads historical data for three financial indices from Yahoo Finance,
 computes their daily simple returns, saves the returns into CSV files, and computes the average daily return
 and volatility (standard deviation) for each index.
 It also allows the user to generate a CSV file with parameters suitable for a Geometric Brownian Motion (GBM) model.
@@ -17,6 +17,11 @@ This script is not yet optimized. Ideally, I would have two separate scripts:
 
 But for now the code works fine.
 """
+
+
+
+# (^GSPC, LQD, IEF) is dataset 1. S&P 500 (^GSPC), iShares iBoxx $ Inv Grade Corporate Bond ETF (LQD), and iShares 7-10 Year Treasury Bond ETF (IEF).
+# 
 
 
 
@@ -59,7 +64,7 @@ def analyze_indices_returns():
         dict: A dictionary where each key is a ticker and the value is another dictionary with:
               'initial_value', 'drift', and 'volatility'
     """
-    indices = ["^GSPC", "LQD", "IEF"]
+    indices = ["^FTSE", "LQD", "IEF"]
     results = {}
     print("Downloading data for indices and computing returns, average returns, and volatility...")
     
