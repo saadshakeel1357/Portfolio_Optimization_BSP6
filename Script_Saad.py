@@ -65,7 +65,7 @@ def analyze_indices_returns():
         dict: A dictionary where each key is a ticker and the value is another dictionary with:
               'initial_value', 'drift', and 'volatility'
     """
-    indices = ["VECP.L", "EUCO.L"]
+    indices = ["DAX", "EXHF.DE", "VGEA.DE"]
     results = {}
     print("Downloading data for indices and computing returns, average returns, and volatility...")
     
