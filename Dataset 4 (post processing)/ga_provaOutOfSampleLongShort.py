@@ -167,6 +167,10 @@ for s in range(intervallo):
 
     def mean_mad(pop):
         lambda_1=0.5
+        # print("this is pop  \n\n\n\n\n")
+        # print(pop)
+        # print("this is pop end \n\n\n\n\n")
+
         return -lambda_1*mean_absolute_deviation(pop)+(1-lambda_1)*rendimento(pop)
 
     def minimax(pop):##minimax
@@ -218,7 +222,7 @@ for s in range(intervallo):
 
 
     def calcola_pop_fitness(pop):
-        # obiettivo=sharpe(pop)
+        obiettivo=sharpe(pop)
         # obiettivo=sortino_ratio(pop)
         ## obiettivo=[omega_ratio(pop),expected_shortfall(pop),mean_variance(pop)]   # three risk measures didnt work
         ## obiettivo=[omega_ratio(pop),value_at_risk(pop),expected_shortfall(pop),mean_variance(pop),twosided(pop),risk_parity(pop)]    # six risk measures didn't work
@@ -229,7 +233,7 @@ for s in range(intervallo):
         # obiettivo=mean_semivariance(pop)
         # obiettivo=mean_mad(pop)
         ## obiettivo=variance_with_skewness(pop)   # didn't work
-        obiettivo=minimax(pop)
+        # obiettivo=minimax(pop)
         # obiettivo=value_at_risk(pop)
         # obiettivo=expected_shortfall(pop)
         return obiettivo
