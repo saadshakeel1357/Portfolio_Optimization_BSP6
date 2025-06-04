@@ -21,9 +21,10 @@ But for now the code works fine.
 
 
 # (^GSPC, LQD, IEF) is dataset 1. S&P 500 (^GSPC), iShares iBoxx $ Inv Grade Corporate Bond ETF (LQD), and iShares 7-10 Year Treasury Bond ETF (IEF).
-# (^STOXX50E, IBCX, IBGM) is dataset 2. EURO STOXX 50 I (^STOXX50E), # iShares Corp Bond Large Cap UCITS ETF EUR Dist (IBCX), and iShares € Govt Bond 7-10yr UCITS ETF EUR (Dist) (IBGM).
+### 
+# (^STOXX50E, EUCO.L, VGEA.DE) is dataset 2. EURO STOXX 50 I (^STOXX50E), SPDR Bloomberg Euro Corporate Bond UCITS ETF (EUCO.L), Vanguard EUR Eurozone Government Bond UCITS ETF EUR Accumulation (VGEA.DE)
 # (URTH, IBND, 1677.T) is dataset 3. iShares MSCI World ETF (URTH), SPDR Bloomberg International Corporate Bond ETF (IBND), Listed Index Fund International Bond (FTSE WGBI) Monthly Dividend Payment (1677.T)
-
+# (DAX, EXHF.DE, VECP.L) is dataset 4. DAX (^DAX), iShares Euro Government Bond Capped 1.5-10.5yr UCITS ETF (DE) (EXHF.DE), Vanguard EUR Corporate Bond UCITS ETF (VECP.L)
 
 
 
