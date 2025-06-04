@@ -21,7 +21,8 @@ But for now the code works fine.
 
 
 # (^GSPC, LQD, IEF) is dataset 1. S&P 500 (^GSPC), iShares iBoxx $ Inv Grade Corporate Bond ETF (LQD), and iShares 7-10 Year Treasury Bond ETF (IEF).
-# 
+# (^STOXX50E, IBCX, IBGM) is dataset 2. EURO STOXX 50 I (^STOXX50E), # iShares Corp Bond Large Cap UCITS ETF EUR Dist (IBCX), and iShares € Govt Bond 7-10yr UCITS ETF EUR (Dist) (IBGM).
+# (URTH, IBND, 1677.T) is dataset 3. iShares MSCI World ETF (URTH), SPDR Bloomberg International Corporate Bond ETF (IBND), Listed Index Fund International Bond (FTSE WGBI) Monthly Dividend Payment (1677.T)
 
 
 
@@ -64,7 +65,7 @@ def analyze_indices_returns():
         dict: A dictionary where each key is a ticker and the value is another dictionary with:
               'initial_value', 'drift', and 'volatility'
     """
-    indices = ["^FTSE", "LQD", "IEF"]
+    indices = ["VECP.L", "EUCO.L"]
     results = {}
     print("Downloading data for indices and computing returns, average returns, and volatility...")
     
