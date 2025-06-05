@@ -25,7 +25,7 @@ But for now the code works fine.
 # (^STOXX50E, EUCO.L, VGEA.DE) is dataset 2. EURO STOXX 50 I (^STOXX50E), SPDR Bloomberg Euro Corporate Bond UCITS ETF (EUCO.L), Vanguard EUR Eurozone Government Bond UCITS ETF EUR Accumulation (VGEA.DE)
 # (URTH, IBND, 1677.T) is dataset 3. iShares MSCI World ETF (URTH), SPDR Bloomberg International Corporate Bond ETF (IBND), Listed Index Fund International Bond (FTSE WGBI) Monthly Dividend Payment (1677.T)
 # (DAX, EXHF.DE, VECP.L) is dataset 4. DAX (^DAX), iShares Euro Government Bond Capped 1.5-10.5yr UCITS ETF (DE) (EXHF.DE), Vanguard EUR Corporate Bond UCITS ETF (VECP.L)
-
+# (^HSI, 3141.HK, IGEA.L) is dataset 5. Hang Seng Index (^HSI), iShares Asia High Yield Bond ETF (3141.HK), iShares Emerging Asia Local Govt Bond UCITS ETF USD (Dist) (IGEA.L)
 
 
 def download_to_csv(ticker: str) -> pd.DataFrame:
@@ -66,7 +66,7 @@ def analyze_indices_returns():
         dict: A dictionary where each key is a ticker and the value is another dictionary with:
               'initial_value', 'drift', and 'volatility'
     """
-    indices = ["DAX", "EXHF.DE", "VGEA.DE"]
+    indices = ["2819.HK", "2829.HK", "3122.HK"]
     results = {}
     print("Downloading data for indices and computing returns, average returns, and volatility...")
     
