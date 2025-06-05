@@ -19,7 +19,19 @@ from operator import *
 two_sided_rolling=[]
 two_sided_rolling_entropy=[]
 
-def run_ga():
+
+def fitness_func_placeholder(pop):
+    pass
+
+
+def run_ga(fitness_func):
+    objective_function = fitness_func
+
+
+
+
+
+
     #set_stock_prices_1=['T','V','MCD','INTC','AAPL','AMZN','KO','PFE','GOOG','AFL','EBAY','MO','JNJ','WFC','PEP','KHC','ABBV','AMD','BAC','GS']
     #set_stock_prices_1=['KO','GOOG']
     #data=web.DataReader(set_stock_prices_1,data_source="yahoo",start='08/01/2015',end='08/01/2020')['Adj Close']
@@ -216,9 +228,34 @@ def run_ga():
             aux2=np.sum(aux1,axis=0)
             return aux2
 
-
+        if fitness_func == 'sharpe':
+            objective_function = sharpe
+        elif fitness_func == 'sortino':
+            objective_function = sortino_ratio
+        elif fitness_func == 'omega':
+            objective_function = omega_ratio
+        elif fitness_func == 'value_at_risk':
+            objective_function = value_at_risk
+        elif fitness_func == 'expected_shortfall':
+            objective_function = expected_shortfall
+        elif fitness_func == 'mean_variance':
+            objective_function = mean_variance
+        elif fitness_func == 'mean_semivariance':
+            objective_function = mean_semivariance
+        elif fitness_func == 'mean_mad':
+            objective_function = mean_mad
+        elif fitness_func == 'minimax':
+            objective_function = minimax
+        elif fitness_func == 'variance_with_skewness':
+            objective_function = variance_with_skewness
+        elif fitness_func == 'twosided':
+            objective_function = twosided
+        elif fitness_func == 'risk_parity':
+            objective_function = risk_parity
+        else:
+            raise ValueError(f"Unknown fitness‐stub: {fitness_func!r}")
         def calcola_pop_fitness(pop):
-            obiettivo=sharpe(pop)
+            # obiettivo=sharpe(pop)
             # obiettivo=sortino_ratio(pop)
             ## obiettivo=[omega_ratio(pop),expected_shortfall(pop),mean_variance(pop)]   # three risk measures didnt work
             ## obiettivo=[omega_ratio(pop),value_at_risk(pop),expected_shortfall(pop),mean_variance(pop),twosided(pop),risk_parity(pop)]    # six risk measures didn't work
@@ -232,6 +269,7 @@ def run_ga():
             # obiettivo=minimax(pop)
             # obiettivo=value_at_risk(pop)
             # obiettivo=expected_shortfall(pop)
+            obiettivo = objective_function(pop)
             return obiettivo
 
 
@@ -1567,7 +1605,7 @@ def run_ga():
     result=pd.concat(frames)
     frames_turnover=[calcola_turnover1,calcola_turnover2,calcola_turnover3,calcola_turnover4,calcola_turnover5]
     result_turnover=pd.concat(frames_turnover)
-    result_turnover.to_excel('K'+str(K_u)+'turnover_adaptiveNikkeiLO.xlsx',index=None)
+    # result_turnover.to_excel('K'+str(K_u)+'turnover_adaptiveNikkeiLO.xlsx',index=None)
     # result.to_excel('K'+str(K_u)+'adaptiveNikkeiLO.xlsx',index=None)
     # pd.DataFrame(two_sided_rolling).iloc[:].to_excel('K'+str(K_u)+'Fitness_TwosidedNIKKEILO.xlsx',index=None)
     # pd.DataFrame(two_sided_rolling_entropy).to_excel('K'+str(K_u)+'Entropy_TwosidedNIKKEILO.xlsx',index=None)
@@ -1577,4 +1615,4 @@ def run_ga():
 
 # If you want to be able to run it directly:
 if __name__ == "__main__":
-    run_ga()
+    run_ga(fitness_func_placeholder)
