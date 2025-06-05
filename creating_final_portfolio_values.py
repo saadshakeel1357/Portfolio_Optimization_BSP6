@@ -25,16 +25,20 @@ def compute_cumulative_returns(df_returns):
     print(df_cumulative.head())
     return df_cumulative
 
-def load_turnover_weights(filepath):
-    """Load turnover Excel file and return the last row's first three weights."""
-    turn_df = pd.read_excel(filepath)
+def load_turnover_weights(df_turnover):
+    """
+    Accept the entire result_turnover DataFrame (from run_ga),
+    and return the last row's first three columns as weights.
+    """
+    # Grab the last row of the DataFrame:
+    last_row = df_turnover.iloc[-1]
 
-    # Extract weights from the last row's first three columns
-    weight1 = turn_df.iloc[-1, 0]
-    weight2 = turn_df.iloc[-1, 1]
-    weight3 = turn_df.iloc[-1, 2]
+    # “First three columns” → take the first three values in that last row
+    weight1 = last_row.iloc[0]
+    weight2 = last_row.iloc[1]
+    weight3 = last_row.iloc[2]
 
-    print("\nWeights (by position):")
+    print("\nWeights (by position), coming from result_turnover last row:")
     print(f"  Column #1 ➔ {weight1}")
     print(f"  Column #2 ➔ {weight2}")
     print(f"  Column #3 ➔ {weight3}")

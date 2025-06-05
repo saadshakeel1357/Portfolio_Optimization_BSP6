@@ -218,7 +218,7 @@ def run_ga():
 
 
         def calcola_pop_fitness(pop):
-            # obiettivo=sharpe(pop)
+            obiettivo=sharpe(pop)
             # obiettivo=sortino_ratio(pop)
             ## obiettivo=[omega_ratio(pop),expected_shortfall(pop),mean_variance(pop)]   # three risk measures didnt work
             ## obiettivo=[omega_ratio(pop),value_at_risk(pop),expected_shortfall(pop),mean_variance(pop),twosided(pop),risk_parity(pop)]    # six risk measures didn't work
@@ -231,7 +231,7 @@ def run_ga():
             ## obiettivo=variance_with_skewness(pop)   # didn't work
             # obiettivo=minimax(pop)
             # obiettivo=value_at_risk(pop)
-            obiettivo=expected_shortfall(pop)
+            # obiettivo=expected_shortfall(pop)
             return obiettivo
 
 
@@ -1572,7 +1572,7 @@ def run_ga():
     # pd.DataFrame(two_sided_rolling).iloc[:].to_excel('K'+str(K_u)+'Fitness_TwosidedNIKKEILO.xlsx',index=None)
     # pd.DataFrame(two_sided_rolling_entropy).to_excel('K'+str(K_u)+'Entropy_TwosidedNIKKEILO.xlsx',index=None)
 
-    return 
+    return result_turnover
 
 
 # If you want to be able to run it directly:
