@@ -19,13 +19,23 @@ But for now the code works fine.
 """
 
 
-
+##### DATASETS AND DATES #####
 # (^GSPC, LQD, IEF) is dataset 1. S&P 500 (^GSPC), iShares iBoxx $ Inv Grade Corporate Bond ETF (LQD), and iShares 7-10 Year Treasury Bond ETF (IEF).
-### 
+### start_date="2002-07-30", end_date="2025-05-22"
+
 # (^STOXX50E, EUCO.L, VGEA.DE) is dataset 2. EURO STOXX 50 I (^STOXX50E), SPDR Bloomberg Euro Corporate Bond UCITS ETF (EUCO.L), Vanguard EUR Eurozone Government Bond UCITS ETF EUR Accumulation (VGEA.DE)
+### start_date="2019-02-19", end_date="2025-04-22"
+
 # (URTH, IBND, 1677.T) is dataset 3. iShares MSCI World ETF (URTH), SPDR Bloomberg International Corporate Bond ETF (IBND), Listed Index Fund International Bond (FTSE WGBI) Monthly Dividend Payment (1677.T)
+### start_date="2012-01-12", end_date="2024-09-04"
+
 # (DAX, EXHF.DE, VECP.L) is dataset 4. DAX (^DAX), iShares Euro Government Bond Capped 1.5-10.5yr UCITS ETF (DE) (EXHF.DE), Vanguard EUR Corporate Bond UCITS ETF (VECP.L)
+### start_date="2016-02-24", end_date="2025-02-26"
+
 # (^HSI, 3141.HK, IGEA.L) is dataset 5. Hang Seng Index (^HSI), iShares Asia High Yield Bond ETF (3141.HK), iShares Emerging Asia Local Govt Bond UCITS ETF USD (Dist) (IGEA.L)
+### start_date="2014-11-07", end_date="2023-11-08"
+
+
 
 
 def download_to_csv(ticker: str) -> pd.DataFrame:

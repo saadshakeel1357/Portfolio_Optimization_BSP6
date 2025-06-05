@@ -54,7 +54,7 @@ def main():
     # list of input CSV files
     file_paths = [
         'LQD.csv',    # corporate bonds
-        '^GSPC.csv',  # S&P 500 index
+        'GSPC.csv',  # S&P 500 index
         'IEF.csv',    # treasury bonds
     ]
 

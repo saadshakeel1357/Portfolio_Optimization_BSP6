@@ -8,9 +8,9 @@ The final output will have the columns ordered as LQD, GSPC, IEF."""
 
 
 # Load the CSV files with tab delimiter and set column names
-gspc_df = pd.read_csv("GSPC_returns.csv", names=["Date", "GSPC"], header=None, skiprows=1, sep="\t")
-ief_df = pd.read_csv("IEF_returns.csv", names=["Date", "IEF"], header=None, skiprows=1, sep="\t")
-lqd_df = pd.read_csv("LQD_returns.csv", names=["Date", "LQD"], header=None, skiprows=1, sep="\t")
+gspc_df = pd.read_csv("GSPC_returns.csv", names=["Date", "GSPC"], header=None, skiprows=1)
+ief_df = pd.read_csv("IEF_returns.csv", names=["Date", "IEF"], header=None, skiprows=1)
+lqd_df = pd.read_csv("LQD_returns.csv", names=["Date", "LQD"], header=None, skiprows=1)
 
 # Convert Date columns to datetime format
 gspc_df["Date"] = pd.to_datetime(gspc_df["Date"])
