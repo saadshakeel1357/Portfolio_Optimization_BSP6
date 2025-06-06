@@ -3,21 +3,9 @@ import glob
 import pandas as pd
 import pandas_market_calendars as mcal
 
-# -------------------------------------------------------------------
-# Set your target percentage here (e.g., 0.2 for 20% through each year)
-PERCENT = 0.5
-# -------------------------------------------------------------------
-
-def value_by_year(filepath, start_date="2016-02-24", end_date="2025-02-26"):
+def value_by_year(filepath, percent, start_date, end_date):
     """
-    Reads a CSV and computes the portfolio value closest to PERCENT through the trading year.
-    
-    Parameters:
-    - filepath: path to the CSV file.
-    - start_date, end_date: strings in "YYYY-MM-DD" format to define the trading calendar range.
-    
-    Returns:
-    - A Series mapping each year to the selected portfolio value (at PERCENT into that year).
+    Reads a CSV and computes the portfolio value closest to `percent` through the trading year.
     """
     df = pd.read_csv(filepath, index_col=0)
 
@@ -39,22 +27,17 @@ def value_by_year(filepath, start_date="2016-02-24", end_date="2025-02-26"):
         group = group.sort_values('Date').reset_index(drop=True)
         n = len(group)
         if n == 0:
-            continue  # skip empty years just in case
-        target_index = int(round(PERCENT * (n - 1)))
+            continue
+        target_index = int(round(percent * (n - 1)))
         value = group.loc[target_index, 'Final Portfolio Value']
         selected_values.append((year, value))
 
     return pd.Series(dict(selected_values))
 
 
-def compute_all(directory="."):
+def compute_all(directory, percent, start_date, end_date):
     """
-    - Finds all files matching final_portfolio_values_*.csv in `directory`.
-    - For each file, computes the Final Portfolio Value at PERCENT through each year.
-    - Returns a DataFrame whose:
-        • index = years (e.g. 2002, 2003, …, 2025)
-        • columns = function names (derived from each filename)
-        • values = the portfolio value at that PERCENT point.
+    Processes all CSV files and returns a DataFrame of portfolio values per strategy per year.
     """
     pattern = os.path.join(directory, "final_portfolio_values_*.csv")
     csv_files = glob.glob(pattern)
@@ -66,34 +49,42 @@ def compute_all(directory="."):
     for filepath in csv_files:
         filename = os.path.basename(filepath)
         parts = filename.replace(".csv", "").split("_")
-        func_name = "_".join(parts[3:])  # e.g., “myfunc”
+        func_name = "_".join(parts[3:])
 
         try:
-            yearly_values = value_by_year(filepath)
+            yearly_values = value_by_year(filepath, percent, start_date, end_date)
             results[func_name] = yearly_values
         except Exception as e:
             print(f"Error processing {filename}: {e}")
 
-    combined = pd.DataFrame(results).sort_index()
-    return combined
+    return pd.DataFrame(results).sort_index()
 
 
-if __name__ == "__main__":
-    print(f"\n📊 Computing portfolio values at {PERCENT*100:.0f}% through each trading year...\n")
-
-    combined_df = compute_all(directory=".")
+def run_analysis(percent, start_date, end_date, directory="."):
+    """
+    Runs the full portfolio analysis pipeline.
+    """
+    print(f"\n📊 Computing portfolio values at {percent * 100:.0f}% through each trading year...\n")
+    combined_df = compute_all(directory, percent, start_date, end_date)
 
     if not combined_df.empty:
         print("\nPortfolio Value by Year (rows = Year, columns = Strategy):\n")
         print(combined_df.to_string())
 
-        # For each strategy (column), sum up (1 - value) whenever value < 1.
         print("\nYearly Deficits per function (sum of 1 - value for years where value < 1):\n")
         for col in combined_df.columns:
-            deficit = 0.0
-            for year_value in combined_df[col]:
-                if year_value < 1:
-                    deficit += (1 - year_value)
+            deficit = sum((1 - val) for val in combined_df[col] if val < 1)
             print(f"{col}: {deficit:.4f}")
     else:
         print("No data processed.")
+
+
+if __name__ == "__main__":
+    percent = 0.5
+    start_date="2016-02-24"
+    end_date="2025-02-26"
+
+    run_analysis(percent, start_date, end_date)
+
+
+

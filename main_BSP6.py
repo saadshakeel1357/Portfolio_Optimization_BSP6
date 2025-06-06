@@ -8,6 +8,8 @@ from creating_final_portfolio_values import (
     compute_final_portfolio_series,
     save_series_to_csv
 )
+from visualize import load_and_combine_csvs, plot_combined
+from computing_yearly_deficit import run_analysis  
 
 
 if __name__ == "__main__":
@@ -52,3 +54,8 @@ if __name__ == "__main__":
         output_file = f'final_portfolio_values_{fitness_name}.csv'
         save_series_to_csv(final_series, output_file)
         print(f"Saved final portfolio series to: {output_file}")
+    
+    
+    # 6) Load all CSVs and plot final comparison
+    combined_df = load_and_combine_csvs(directory=".")
+    plot_combined(combined_df)
