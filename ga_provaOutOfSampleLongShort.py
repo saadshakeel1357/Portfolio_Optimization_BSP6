@@ -1,3 +1,8 @@
+import warnings
+warnings.filterwarnings("ignore")
+#added for testing
+
+
 import numpy as np
 import pandas as pd
 import random
@@ -24,7 +29,7 @@ def fitness_func_placeholder(pop):
     pass
 
 
-def run_ga(fitness_func):
+def run_ga(fitness_func, on_window_complete):
     objective_function = fitness_func
 
 
@@ -254,21 +259,10 @@ def run_ga(fitness_func):
             objective_function = risk_parity
         else:
             raise ValueError(f"Unknown fitness‐stub: {fitness_func!r}")
+        
+        
         def calcola_pop_fitness(pop):
-            # obiettivo=sharpe(pop)
-            # obiettivo=sortino_ratio(pop)
-            ## obiettivo=[omega_ratio(pop),expected_shortfall(pop),mean_variance(pop)]   # three risk measures didnt work
-            ## obiettivo=[omega_ratio(pop),value_at_risk(pop),expected_shortfall(pop),mean_variance(pop),twosided(pop),risk_parity(pop)]    # six risk measures didn't work
-            # obiettivo=omega_ratio(pop)
-            # obiettivo=risk_parity(pop)
-            # obiettivo=twosided(pop)
-            # obiettivo=mean_variance(pop)
-            # obiettivo=mean_semivariance(pop)
-            # obiettivo=mean_mad(pop)
-            ## obiettivo=variance_with_skewness(pop)   # didn't work
-            # obiettivo=minimax(pop)
-            # obiettivo=value_at_risk(pop)
-            # obiettivo=expected_shortfall(pop)
+
             obiettivo = objective_function(pop)
             return obiettivo
 
@@ -1020,7 +1014,7 @@ def run_ga(fitness_func):
                 if i>=2*window:
                     #credito=credit_assignment()
                     wheel_selection=p_min+(1-K*p_min)*(credito[i-2*window,:]/(np.sum(credito[i-2*window,:])))
-                    print(wheel_selection)
+                    # print(wheel_selection)   # Saad removed it for testing
                     wheel_selection=np.cumsum(wheel_selection)
                     u=np.random.uniform(0,1)
                     for c in range(len(wheel_selection)):
@@ -1033,9 +1027,9 @@ def run_ga(fitness_func):
                 credito=credit_function
                 C=0.00001
                 aux=np.sum(matrice_memoria_operatori,axis=1)
-                print(aux)
+                # print(aux)  # Saad removed it for testing
                 if i>=2*window:
-                    print(credito[i-2*window,:])
+                    # print(credito[i-2*window,:])   # Saad removed it for testing
                     #credito=credit_assignment()
                     mab_selection=credito[i-2*window,:]+C*np.sqrt(np.log(np.sum(aux))/aux)
                     c=np.where(mab_selection==max(mab_selection))
@@ -1043,7 +1037,7 @@ def run_ga(fitness_func):
                     for j in range(num_crossover):
                         ph.add_element(credito[i-2*window,j])
                         if ph.detected_change():
-                            print('restart')
+                            print('restart')   # Saad removed it for testing
             elif choose_op=='ap':
                 beta=0.5
                 idx=np.random.randint(0,19)
@@ -1057,13 +1051,13 @@ def run_ga(fitness_func):
                     best_ip=best_ip[0][0]
                     best_ip_succ=np.where(credito[i-2*window+1,:]==max(credito[i-2*window+1,:]))
                     best_ip_succ=best_ip_succ[0][0]
-                    print(best_ip)
-                    print(best_ip_succ)
+                    # print(best_ip)   # Saad removed it for testing
+                    # print(best_ip_succ)   # Saad removed it for testing
                     #credito=credit_assignment()
                     for j in range(num_crossover):
                         ap_selection[i-2*window+1,j]=ap_selection[i-2*window,j]+beta*(p_min-ap_selection[i-2*window,j])
                     ap_selection[i-2*window+1,best_ip_succ]=ap_selection[i-2*window,best_ip]+beta*(p_max-ap_selection[i-2*window,best_ip])
-                    print(ap_selection[i-2*window,:])
+                    # print(ap_selection[i-2*window,:])   # Saad removed it for testing
                     #wheel_selection=np.cumsum(ap_selection)
                     #u=np.random.uniform(0,1)
                     #for c in range(len(wheel_selection)):
@@ -1186,7 +1180,7 @@ def run_ga(fitness_func):
                         angolo=increasing_strategy()
                         memoria_angolo[i]=angolo
                         idx=operator_selection(credit_assignment(increasing_strategy()))
-                    print(idx)
+                    # print(idx)   # Saad removed it for testing
                     if i>0:
                         if contatore==0:
                             matrice_memoria_operatori[idx,contatore]=matrice_memoria_operatori[idx,contatore]+1
@@ -1308,8 +1302,8 @@ def run_ga(fitness_func):
                 misure_rischio_is_oos[5,1]=-np.mean(rp_oos)
             ####
             contatore_pesi_individui[w,:]=np.mean(nuova_pop[0:4],axis=0)
-            print(media_simulazioni_fitness_media)
-            print(media_simulazioni_fitness_max)
+            # print(media_simulazioni_fitness_media)  # Saad removed it for testing
+            # print(media_simulazioni_fitness_max)   # Saad removed it for testing
             if np.sum(nuova_pop[pos_fitness_migliore])>1.0001:
                     print('unfeasible')
             else:
@@ -1504,6 +1498,9 @@ def run_ga(fitness_func):
         #portfolio_performance.index=rendimenti_set_1.index
         #portfolio_performance_OOS.index=rendimenti_set_1_OOS.index
         calcolo_turnover[s,:,:]=contatore_pesi_individui
+
+        avg_weights_for_this_window = contatore_pesi_individui[0, :].copy()
+        on_window_complete(avg_weights_for_this_window)
 
 
     calcola_turnover1=pd.DataFrame(calcolo_turnover[0,:,:])

@@ -14,6 +14,19 @@ from computing_yearly_deficit import run_analysis
 
 if __name__ == "__main__":
 
+    # ─── 1) Prepare a list to collect each window’s averaged weights ─────────
+    collected_weights_per_window = []
+
+
+    # ─── 2) Define a callback that will be invoked once per walk-forward window ─
+    def on_window_complete(avg_weights_array):
+        """
+        This function is called by run_ga(...) as soon as one window’s final
+        averaged weight vector is ready. We simply append it to our list.
+        """
+        print("→ Received averaged weights for one window:", avg_weights_array)
+        collected_weights_per_window.append(avg_weights_array.copy())
+
     fitness_func_names = [
         'sharpe',
         'sortino',
@@ -37,7 +50,7 @@ if __name__ == "__main__":
         print(f"\nRunning GA with fitness function: {fitness_name}")
 
         # Run genetic algorithm with the current fitness function
-        result_turnover = run_ga(fitness_name)
+        result_turnover = run_ga(fitness_name, on_window_complete)
         print("Last row of result_turnover:")
         print(result_turnover.tail(1))
 
@@ -69,3 +82,8 @@ if __name__ == "__main__":
     end_date = "2025-05-22"
 
     run_analysis(percent, start_date, end_date)
+
+    # ─── 4) After run_ga has finished, you can inspect collected_weights_per_window: ─
+    print("\nAll windows’ averaged weights collected:")
+    for idx, wvec in enumerate(collected_weights_per_window, start=1):
+        print(f" Window {idx}: {wvec}")
