@@ -80,9 +80,14 @@ def run_analysis(percent, start_date, end_date, directory="."):
 
 
 if __name__ == "__main__":
+    # Percentage into the trading year to extract the portfolio value (e.g., 0.2 = 20%, 0.0 = start of year 1 Jan)
     percent = 0.2
-    start_date = "2002-07-30"
-    end_date = "2025-05-22"
+    start_date = "2002-07-30" # Start date for the NYSE trading calendar range
+    end_date = "2025-05-22"   # End date for the NYSE trading calendar range
+
+    # You might have to change the end date to match the number of dates we have in the final_portfolio_values_*.csv files
+    # When you run the code, it will tell you the difference in length between the trading days and the CSV file rows.
+    # Match the end date according to that comparison
 
     run_analysis(percent, start_date, end_date)
 

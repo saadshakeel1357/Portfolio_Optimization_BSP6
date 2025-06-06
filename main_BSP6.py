@@ -17,16 +17,16 @@ if __name__ == "__main__":
     fitness_func_names = [
         'sharpe',
         'sortino',
-        'omega',
-        'value_at_risk',
-        'expected_shortfall',
-        'mean_variance',
-        'mean_semivariance',
-        'mean_mad',
-        'minimax',
-        'variance_with_skewness',
-        'twosided',
-        'risk_parity'
+        # 'omega',
+        # 'value_at_risk',
+        # 'expected_shortfall',
+        # 'mean_variance',
+        # 'mean_semivariance',
+        # 'mean_mad',
+        # 'minimax',
+        # 'variance_with_skewness',
+        # 'twosided',
+        # 'risk_parity'
     ]
 
     returns_file = 'merged_returns.csv'
@@ -59,3 +59,13 @@ if __name__ == "__main__":
     # 6) Load all CSVs and plot final comparison
     combined_df = load_and_combine_csvs(directory=".")
     plot_combined(combined_df)
+
+
+    # Set the following variables according to each dataset used:
+    # See the computing_yearly_deficit.py file for more details
+    
+    percent = 0.2
+    start_date = "2002-07-30"
+    end_date = "2025-05-22"
+
+    run_analysis(percent, start_date, end_date)
