@@ -14,6 +14,11 @@ from computing_yearly_deficit import run_analysis
 
 if __name__ == "__main__":
 
+    shared_state = {
+        "last_avg_weights": None,   # will hold the most recent window’s averaged weights
+        "some_flag": False,         # example flag that GA could toggle
+        # … add any other keys you know you’ll need later …
+    }
     # ─── 1) Prepare a list to collect each window’s averaged weights ─────────
     collected_weights_per_window = []
 
@@ -26,6 +31,14 @@ if __name__ == "__main__":
         """
         print("→ Received averaged weights for one window:", avg_weights_array)
         collected_weights_per_window.append(avg_weights_array.copy())
+        
+        # Store those weights in the shared_state dict, so GA can see them if it wants
+        shared_state["last_avg_weights"] = avg_weights_array.copy()
+        print("shared state in window complete code: \n",shared_state["last_avg_weights"])
+
+
+        # (Optionally flip a flag or record other info into shared_state here)
+        shared_state["some_flag"] = True
 
     fitness_func_names = [
         'sharpe',
@@ -50,7 +63,12 @@ if __name__ == "__main__":
         print(f"\nRunning GA with fitness function: {fitness_name}")
 
         # Run genetic algorithm with the current fitness function
-        result_turnover = run_ga(fitness_name, on_window_complete)
+
+        print("before running GA \n" )
+        print(shared_state)
+        result_turnover = run_ga(fitness_name, on_window_complete, shared_state)
+        print("shared state in main code: \n",shared_state["last_avg_weights"])
+
         print("Last row of result_turnover:")
         print(result_turnover.tail(1))
 

@@ -29,7 +29,7 @@ def fitness_func_placeholder(pop):
     pass
 
 
-def run_ga(fitness_func, on_window_complete):
+def run_ga(fitness_func, on_window_complete, shared_state):
     objective_function = fitness_func
 
 
@@ -1501,6 +1501,17 @@ def run_ga(fitness_func, on_window_complete):
 
         avg_weights_for_this_window = contatore_pesi_individui[0, :].copy()
         on_window_complete(avg_weights_for_this_window)
+
+        # Example: After we call on_window_complete, check shared_state
+        if shared_state.get("some_flag"):
+            # do something different for the next window
+            print("GA sees that shared_state['some_flag'] is True—adjusting behavior.")
+            # Maybe reset the flag so it only fires once:
+            shared_state["some_flag"] = True
+            print("printing shared_state['some_flag'] after reset:")
+            print("\n", shared_state["some_flag"], "\n")
+            shared_state["last_avg_weights"] = avg_weights_for_this_window
+            print("shared state in ga code: \n",shared_state["last_avg_weights"])
 
 
     calcola_turnover1=pd.DataFrame(calcolo_turnover[0,:,:])
