@@ -84,6 +84,8 @@ if __name__ == "__main__":
     start_date="2016-02-24"
     end_date="2025-02-26"
 
+    # add dates for all the datasets here for easy access (cleaning up the code)
+
     run_analysis(percent, start_date, end_date)
 
 

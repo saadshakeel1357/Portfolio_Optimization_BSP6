@@ -15,8 +15,8 @@ from computing_yearly_deficit import run_analysis
 if __name__ == "__main__":
 
     percent = 0.2
-    start_date = "2002-07-30"
-    end_date = "2025-05-22"
+    start_date="2014-11-07"
+    end_date="2025-01-23"
 
     shared_state = {
         "last_avg_weights": None,   # will hold the most recent window’s averaged weights

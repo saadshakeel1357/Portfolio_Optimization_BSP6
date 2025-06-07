@@ -82,9 +82,9 @@ def run_analysis(percent, start_date, end_date, fitness_name, directory="."):
 
 
 if __name__ == "__main__":
-    percent = 0.2
-    start_date = "2002-07-30"
-    end_date = "2025-05-22"
+    percent = 0.4
+    start_date = "2019-02-19"
+    end_date = "2025-04-22"
 
     run_analysis(percent, start_date, end_date)
 
