@@ -60,21 +60,23 @@ def compute_all(directory, percent, start_date, end_date):
     return pd.DataFrame(results).sort_index()
 
 
-def run_analysis(percent, start_date, end_date, directory="."):
+def run_analysis(percent, start_date, end_date, fitness_name, directory="."):
     """
     Runs the full portfolio analysis pipeline.
     """
-    print(f"\n📊 Computing portfolio values at {percent * 100:.0f}% through each trading year...\n")
+    print(f"\nComputing portfolio values at {percent * 100:.0f}% through each trading year...\n")
     combined_df = compute_all(directory, percent, start_date, end_date)
 
     if not combined_df.empty:
-        print("\nPortfolio Value by Year (rows = Year, columns = Strategy):\n")
-        print(combined_df.to_string())
+        # print("\nPortfolio Value by Year (rows = Year, columns = Strategy):\n")
+        # print(combined_df.to_string())
 
-        print("\nYearly Deficits per function (sum of 1 - value for years where value < 1):\n")
+        # print("\nYearly Deficits per function (sum of 1 - value for years where value < 1):\n")
         for col in combined_df.columns:
             deficit = sum((1 - val) for val in combined_df[col] if val < 1)
-            print(f"{col}: {deficit:.4f}")
+            # print(f"{col}: {deficit:.4f}")
+            if col == fitness_name:
+                return (f"{col}:{deficit}")
     else:
         print("No data processed.")
 

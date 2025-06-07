@@ -55,15 +55,15 @@ def apply_weights(df_values, weights):
     df_weighted[col_names[1]] *= weights[1]
     df_weighted[col_names[2]] *= weights[2]
 
-    print("\nWeighted cumulative values (head):")
-    print(df_weighted.head())
+    # print("\nWeighted cumulative values (head):")
+    # print(df_weighted.head())
     
     return df_weighted
 
 def compute_final_portfolio_series(df_weighted):
     """Sum across weighted columns to get the final portfolio series."""
     final_series = df_weighted.sum(axis=1)
-    print("\nFinal aggregated portfolio values over time:")
+    print("\nFinal portfolio values:")
     print(final_series)
     return final_series
 
@@ -84,6 +84,7 @@ if __name__ == "__main__":
     output_file = 'final_portfolio_values_expected_shortfall.csv'
 
     # Step-by-step execution
+    print("Creating final portfolio values...")
     df = load_returns_csv(returns_file)
     df_cumulative = compute_cumulative_returns(df)
     weights = load_turnover_weights(turnover_file)

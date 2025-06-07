@@ -14,9 +14,13 @@ from computing_yearly_deficit import run_analysis
 
 if __name__ == "__main__":
 
+    percent = 0.2
+    start_date = "2002-07-30"
+    end_date = "2025-05-22"
+
     shared_state = {
         "last_avg_weights": None,   # will hold the most recent window’s averaged weights
-        "some_flag": False,         # example flag that GA could toggle
+        "yearly_deficit": None,  # will hold the yearly deficit value if needed
         # … add any other keys you know you’ll need later …
     }
     # ─── 1) Prepare a list to collect each window’s averaged weights ─────────
@@ -25,34 +29,49 @@ if __name__ == "__main__":
 
     # ─── 2) Define a callback that will be invoked once per walk-forward window ─
     def on_window_complete(avg_weights_array):
-        """
-        This function is called by run_ga(...) as soon as one window’s final
-        averaged weight vector is ready. We simply append it to our list.
-        """
-        print("→ Received averaged weights for one window:", avg_weights_array)
+
+
+        print("Inside window complete fuction \n")
+        # print("Received averaged weights from ga code: \n", avg_weights_array)
         collected_weights_per_window.append(avg_weights_array.copy())
         
         # Store those weights in the shared_state dict, so GA can see them if it wants
         shared_state["last_avg_weights"] = avg_weights_array.copy()
-        print("shared state in window complete code: \n",shared_state["last_avg_weights"])
+        print("shared state in window complete code: \n")
+        print(shared_state)
+
+        # computing yearly deficit for testing
+        w1, w2, w3 = shared_state["last_avg_weights"]
+        # Apply weights
+        df_weighted = apply_weights(df_cumulative, (w1, w2, w3))
+
+        # Compute final series
+        final_series = compute_final_portfolio_series(df_weighted)
+
+        # Save to CSV with appropriate name
+        output_file = f'final_portfolio_values_{fitness_name}.csv'
+        save_series_to_csv(final_series, output_file)
+        # print(f"Saved final portfolio series to TESTTTTT: {output_file}")
+
+        shared_state["yearly_deficit"] = run_analysis(percent, start_date, end_date, fitness_name)
+        print("Yearly deficit computed and stored in shared_state inside window complete code:", shared_state["yearly_deficit"])
 
 
-        # (Optionally flip a flag or record other info into shared_state here)
-        shared_state["some_flag"] = True
+
 
     fitness_func_names = [
         'sharpe',
-        'sortino',
-        # 'omega',
-        # 'value_at_risk',
-        # 'expected_shortfall',
-        # 'mean_variance',
-        # 'mean_semivariance',
-        # 'mean_mad',
-        # 'minimax',
-        # 'variance_with_skewness',
-        # 'twosided',
-        # 'risk_parity'
+        'sortino_ratio',
+        'omega_ratio',
+        'value_at_risk',
+        'expected_shortfall',
+        'mean_variance',
+        'mean_semivariance',
+        'mean_mad',
+        'minimax',
+        'variance_with_skewness',
+        'twosided',
+        'risk_parity'
     ]
 
     returns_file = 'merged_returns.csv'
@@ -74,7 +93,6 @@ if __name__ == "__main__":
 
         # Extract weights from the last row of result_turnover
         w1, w2, w3 = load_turnover_weights(result_turnover)
-
         # Apply weights
         df_weighted = apply_weights(df_cumulative, (w1, w2, w3))
 
@@ -95,11 +113,9 @@ if __name__ == "__main__":
     # Set the following variables according to each dataset used:
     # See the computing_yearly_deficit.py file for more details
     
-    percent = 0.2
-    start_date = "2002-07-30"
-    end_date = "2025-05-22"
 
-    run_analysis(percent, start_date, end_date)
+
+    
 
     # ─── 4) After run_ga has finished, you can inspect collected_weights_per_window: ─
     print("\nAll windows’ averaged weights collected:")

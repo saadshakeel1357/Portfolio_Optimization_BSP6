@@ -31,7 +31,8 @@ def fitness_func_placeholder(pop):
 
 def run_ga(fitness_func, on_window_complete, shared_state):
     objective_function = fitness_func
-
+    func_name = fitness_func
+    deficit = 0.0
 
 
 
@@ -118,6 +119,9 @@ def run_ga(fitness_func, on_window_complete, shared_state):
                     #fRP[:,j]=(((pesi[:,j]*Cx[j,:])/portvar)-(1/geni))**2
                     fRP[:,j]=np.abs(((pesi[:,j]*Cx[j,:])/portvar)-(1/geni))
             rp=-np.sum(fRP,axis=1)
+            if func_name == 'risk_parity':
+                return rp + deficit
+            print("deficit not added to risk_parity")
             return rp
 
 
@@ -138,6 +142,9 @@ def run_ga(fitness_func, on_window_complete, shared_state):
             pesi=pop
             rendimento_portafoglio_mensile=rendimenti_set_1@pesi.T
             omega=(np.sum(np.minimum(rendimento_portafoglio_mensile,0),axis=0)/np.sum(np.maximum(rendimento_portafoglio_mensile,0),axis=0))
+            if func_name == 'omega_ratio':
+                return omega + deficit
+            print("deficit not added to omega_ratio")
             return omega
 
         def twosided(pop):
@@ -162,6 +169,8 @@ def run_ga(fitness_func, on_window_complete, shared_state):
             for z in range(len(rendimento_portafoglio_mensile.T)):
                     twoside[z]=-a*np.linalg.norm(upside.iloc[:,z],ord=1)-(1-a)*np.linalg.norm(downside.iloc[:,z],ord=2)+rendimento_portafoglio_mensile.mean()[z]
             #twosided=a*np.linalg.norm(upside,ord=1)+(1-a)*np.linalg(downside,ord=2)-rendimento_portafoglio_mensile
+            if func_name == 'twosided':
+                return twoside + deficit
             return twoside
 
         def sortino_ratio(pop):
@@ -169,30 +178,48 @@ def run_ga(fitness_func, on_window_complete, shared_state):
             rendimento_portafoglio_mensile=rendimenti_set_1@pesi.T
             semivar=(np.var(np.minimum(rendimento_portafoglio_mensile.mean()-rendimento_portafoglio_mensile,0),axis=0))
             sortino=np.mean(rendimento_portafoglio_mensile,axis=0)/semivar
+            if func_name == 'sortino_ratio':
+                return sortino + deficit
+            print("deficit not added to sortino_ratio")
             return sortino
 
         def sharpe(pop):
+            if func_name == 'sharpe':
+                return rendimento(pop)/vol(pop) + deficit
+            print("deficit not added to sharpe")
             return rendimento(pop)/vol(pop)
 
         def mean_variance(pop):
             lambda_1=0.5
+            if func_name == 'mean_variance':
+                return -lambda_1*vol(pop)+(1-lambda_1)*rendimento(pop) + deficit
+            print("deficit not added to mean_variance")
             return -lambda_1*vol(pop)+(1-lambda_1)*rendimento(pop)
             
         def mean_semivariance(pop):
             lambda_1=0.5
+            if func_name == 'mean_semivariance':
+                return -lambda_1*semivar(pop)+(1-lambda_1)*rendimento(pop) + deficit
+            print("deficit not added to mean_semivariance")
             return -lambda_1*semivar(pop)+(1-lambda_1)*rendimento(pop)
 
         def mean_mad(pop):
             lambda_1=0.5
+            if func_name == 'mean_mad':
+                return -lambda_1*mean_absolute_deviation(pop)+(1-lambda_1)*rendimento(pop) + deficit
+            print("deficit not added to mean_mad")
             return -lambda_1*mean_absolute_deviation(pop)+(1-lambda_1)*rendimento(pop)
 
-        def minimax(pop):##minimax
+        def minimax(pop):
             lambda_1=0.5
             minimax=np.zeros(len(pop))
             for i in range(len(pop)):
                 #rendimento_portafoglio[i] = rendimento_medio_set_1 * pesi[i] * 12
                 #np.sum(np.abs(rendimenti_set_1-*pesi[i],axis=1))
                 minimax[i]=-lambda_1*min((1-lambda_1)*(rendimento_medio_set_1 * pop[i])-(np.mean(np.abs(rendimenti_set_1-rendimento_medio_set_1))*pop[i]))
+            if func_name == 'minimax':
+                return minimax + deficit
+            print("deficit not added to minimax")
             return minimax
 
         def variance_with_skewness(pop):
@@ -205,7 +232,11 @@ def run_ga(fitness_func, on_window_complete, shared_state):
             dsr2=np.array(np.mean((rendimento_portafoglio_mensile-np.mean(rendimento_portafoglio_mensile))**2))
             dsr3=np.array(np.mean((rendimento_portafoglio_mensile-np.mean(rendimento_portafoglio_mensile))**3))
             ccef=-lambda_1*dsr2+(1-lambda_1)*np.mean(rendimento_portafoglio_mensile)+(dsr3/(dsr2)**(3/2))
-            return ccef
+            if func_name == 'variance_with_skewness':
+                # return ccef + deficit # removed it to fix IndexError: invalid index to scalar variable.
+                return np.full(pop.shape[0], ccef)
+            print("deficit not added to variance_with_skewness")
+            return np.full(pop.shape[0], ccef)
 
         def value_at_risk(pop):
             alpha=0.05
@@ -213,6 +244,9 @@ def run_ga(fitness_func, on_window_complete, shared_state):
             stdev=vol(pop)
             var=norm.ppf(alpha,rend,stdev)*np.sqrt(21)
             #var=(norm.ppf(1-alpha)*stdev-rend)*np.sqrt(21)
+            if func_name == 'value_at_risk':
+                return var + deficit
+            # print("deficit not added to value_at_risk")
             return var
 
         def expected_shortfall(pop):
@@ -220,6 +254,9 @@ def run_ga(fitness_func, on_window_complete, shared_state):
             rend=rendimento(pop)
             std=vol(pop)
             es=-(alpha**-1*norm.pdf(norm.ppf(alpha))*std - rend)*np.sqrt(21)
+            if func_name == 'expected_shortfall':
+                return es + deficit
+            print("deficit not added to expected_shortfall")
             return es
 
 
@@ -235,9 +272,9 @@ def run_ga(fitness_func, on_window_complete, shared_state):
 
         if fitness_func == 'sharpe':
             objective_function = sharpe
-        elif fitness_func == 'sortino':
+        elif fitness_func == 'sortino_ratio':
             objective_function = sortino_ratio
-        elif fitness_func == 'omega':
+        elif fitness_func == 'omega_ratio':
             objective_function = omega_ratio
         elif fitness_func == 'value_at_risk':
             objective_function = value_at_risk
@@ -1500,18 +1537,23 @@ def run_ga(fitness_func, on_window_complete, shared_state):
         calcolo_turnover[s,:,:]=contatore_pesi_individui
 
         avg_weights_for_this_window = contatore_pesi_individui[0, :].copy()
+
+        print("\n\nWindow complete function called from ga code \n")
         on_window_complete(avg_weights_for_this_window)
 
-        # Example: After we call on_window_complete, check shared_state
-        if shared_state.get("some_flag"):
-            # do something different for the next window
-            print("GA sees that shared_state['some_flag'] is True—adjusting behavior.")
-            # Maybe reset the flag so it only fires once:
-            shared_state["some_flag"] = True
-            print("printing shared_state['some_flag'] after reset:")
-            print("\n", shared_state["some_flag"], "\n")
-            shared_state["last_avg_weights"] = avg_weights_for_this_window
-            print("shared state in ga code: \n",shared_state["last_avg_weights"])
+  
+        shared_state["last_avg_weights"] = avg_weights_for_this_window
+        print("shared state in ga code: \n")
+        print(shared_state)
+
+        print("\nParsed yearly deficit in ga_code:")
+        func_name, deficit = shared_state["yearly_deficit"].split(":")
+        yearly_deficit = {func_name.strip(): (deficit.strip())}
+        deficit = float(deficit)
+
+        print(yearly_deficit) 
+        print("Deficit only:  ", deficit) 
+
 
 
     calcola_turnover1=pd.DataFrame(calcolo_turnover[0,:,:])
@@ -1622,5 +1664,5 @@ def run_ga(fitness_func, on_window_complete, shared_state):
 
 
 # If you want to be able to run it directly:
-if __name__ == "__main__":
-    run_ga(fitness_func_placeholder)
+# if __name__ == "__main__":
+    # run_ga(fitness_func_placeholder)
